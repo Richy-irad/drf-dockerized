@@ -1,12 +1,12 @@
 from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from snippets.models import Snippet
 from snippets.serializers import SnippetSerializer
 
 
-@csrf_exempt
-def snippets_list(request):
+@api_view(['GET', 'POST'])
+def snippets_list(request, format=None):
     """List all code snippets, or create a new snippet.
 
     Args:
@@ -25,8 +25,8 @@ def snippets_list(request):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
     
-@csrf_exempt
-def snippet_detail(request, pk):
+@api_view(['GET', 'PUT', 'DELETE'])
+def snippet_detail(request, pk, format=None):
     try:
         snippet = Snippet.objects.get(pk=pk)
     except Snippet.DoesNotExist:
